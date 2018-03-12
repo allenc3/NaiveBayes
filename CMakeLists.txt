@@ -3,5 +3,9 @@ project(naivebayes)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(naivebayes)
-add_executable(unit-tests)
+add_executable(naivebayes src/main.cpp src/Number.cpp src/Number.h test/TestingData.cpp test/TestingData.h)
+add_executable(unit-tests catch.hpp test/Test.cpp src/Number.h src/Number.cpp test/TestingData.h test/TestingData.cpp)
+
+set_target_properties(unit-tests PROPERTIES LINKER_LANGUAGE CXX)
+
+
