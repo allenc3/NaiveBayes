@@ -14,13 +14,14 @@ using std::vector;
 
 class Training {
     public:
-        static bool ReadTrainingFiles(vector<string> &all_input);
+        static bool ReadTrainingImages(vector<string> &all_input, string file_name);
+        static bool ReadTrainingLabels(vector<string> &all_input, string file_name);
         static vector<Number> InitializeAllNum();
         static void ProcessInput(vector<string> input, vector<string> &training_images,
                                  vector<string> &training_labels);
         static void TrainAllNum(vector<Number> &all_num, vector<string> training_images,
                                 vector<string> training_labels);
-        static bool SaveModel(vector<string> all_input);
+        static bool SaveModel(vector<string> all_input, string file_name);
 
 };
 

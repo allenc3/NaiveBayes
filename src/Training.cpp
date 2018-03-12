@@ -15,53 +15,40 @@ using std::cout;
 using std::ifstream;
 using std::ofstream;
 
-bool Training::ReadTrainingFiles(vector<string> &all_input) {
+bool Training::ReadTrainingImages(vector<string> &all_input, string file_name) {
 
-    string file_name;
     string base_path = "data/";
-    while(true) {
-        cout << "Please choose a \"training images\" file!\n";
+    ifstream training_images(base_path + file_name);
 
-        cin >> file_name;
-        if (file_name == "exit") {
-            return true;
+    if (training_images.fail()) {
+        return false;
+    } else {
+        string line;
+        while (std::getline(training_images, line)) {
+            all_input.push_back(line);
         }
-
-        ifstream training_images(base_path + file_name);
-        if (training_images.fail()) {
-            cout << file_name + " does not exist!\n";
-            continue;
-        } else {
-            string line;
-            while (std::getline(training_images, line)) {
-                all_input.push_back(line);
-            }
-            break;
-        }
+        return true;
     }
+}
 
-    while(true) {
-        cout << "Please choose a \"training labels\" file!\n";
-        cin >> file_name;
-        if(file_name == "exit") {
-            return true;
+bool Training::ReadTrainingLabels(vector<string> &all_input, string file_name) {
+
+    string base_path = "data/";
+    ifstream training_labels(base_path + file_name);
+
+
+    if (training_labels.fail()) {
+        return false;
+    } else{
+        string line;
+        while (std::getline(training_labels, line)) {
+            all_input.push_back(line);
         }
 
-        ifstream training_labels(base_path + file_name);
-        if (training_labels.fail()) {
-            cout << file_name + " does not exist!\n";
-            continue;
-        } else{
-            string line;
-            while (std::getline(training_labels, line)) {
-                all_input.push_back(line);
-            }
-
-//            for (int i = 0; i < all_input.size(); ++i) {
-//                cout << all_input.at(i) + "\n";
-//            }
-            return false;
-        }
+//        for (int i = 0; i < all_input.size(); ++i) {
+//            cout << all_input.at(i) + "\n";
+//        }
+        return true;
     }
 }
 
@@ -115,48 +102,41 @@ void Training::TrainAllNum(vector<Number> &all_num, vector<string> training_imag
     }
 }
 
-bool Training::SaveModel(vector<string> all_input) {
+bool Training::SaveModel(vector<string> all_input, string file_name) {
 
     ofstream myfile;
 
-    while(true) {
-        string input;
-        cout << "What is the file name you want to save to?\n";
-        cin >> input;
-        if(input == "exit") {
-            return false;
+    myfile.open("models/" + file_name + ".txt");
+
+    if (myfile.good()) {
+        vector<string> training_images;
+        vector<string> training_labels;
+
+        vector<Number> all_num = Training::InitializeAllNum();
+
+        Training::ProcessInput(all_input, training_images, training_labels);
+        Training::TrainAllNum(all_num, training_images, training_labels);
+
+        vector<double> priors;
+        for (int i = 0; i < 10; ++i) {
+            priors.push_back(all_num.at(i).times_appeared / (double) training_labels.size());
         }
-        myfile.open("models/" + input + ".txt");
 
-        if (myfile.good()) {
-            vector<string> training_images;
-            vector<string> training_labels;
-
-            vector<Number> all_num = Training::InitializeAllNum();
-
-            Training::ProcessInput(all_input, training_images, training_labels);
-            Training::TrainAllNum(all_num, training_images, training_labels);
-
-            vector<double> priors;
-            for (int i = 0; i < 10; ++i) {
-                priors.push_back(all_num.at(i).times_appeared / (double) training_labels.size());
-            }
-
-            for (int i = 0; i < 10; ++i) {
-                myfile << priors.at(i) << "\n";
-                for (int j = 0; j < 28; ++j) {
-                    for (int k = 0; k < 28; ++k) {
-                        myfile << std::to_string(all_num[i].probability_matrix[j][k]);
-                    }
-                    myfile << "\n";
+        for (int i = 0; i < 10; ++i) {
+            myfile << priors.at(i) << "\n";
+            for (int j = 0; j < 28; ++j) {
+                for (int k = 0; k < 28; ++k) {
+                    myfile << std::to_string(all_num[i].probability_matrix[j][k]);
                 }
+                myfile << "\n";
             }
-            myfile.close();
-            return true;
-        } else {
-            cout << "File path invalid!\n";
         }
+        myfile.close();
+        return true;
+    } else {
+        return false;
     }
+
 
 
 }

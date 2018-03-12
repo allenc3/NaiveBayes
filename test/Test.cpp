@@ -6,6 +6,7 @@
 #include "../catch.hpp"
 #include "../src/Number.h"
 #include "TestingData.h"
+#include "../src/Training.h"
 #include <string>
 #include <sstream>
 
@@ -23,7 +24,7 @@ TEST_CASE("Testing Number Class"){
     }
 
     SECTION("InitializeAllNum"){
-        vector<Number> num = Number::InitializeAllNum();
+        vector<Number> num = Training::InitializeAllNum();
         REQUIRE(num.at(0).number == 0);
         REQUIRE(num.at(9).number == 9);
     }
@@ -32,7 +33,7 @@ TEST_CASE("Testing Number Class"){
         vector<string> training_images;
         vector<string> training_labels;
         vector<string> all_input = TestingData::all_input;
-        Number::ProcessInput(all_input, training_images, training_labels);
+        Training::ProcessInput(all_input, training_images, training_labels);
 
         REQUIRE(training_images.at(0).size() == 784);
         REQUIRE(stoi(training_labels.at(0)) == 5);
@@ -57,10 +58,10 @@ TEST_CASE("Testing Number Class"){
         vector<string> training_images;
         vector<string> training_labels;
         vector<string> all_input = TestingData::all_input;
-        Number::ProcessInput(all_input, training_images, training_labels);
-        vector<Number> all_num = Number::InitializeAllNum();
+        Training::ProcessInput(all_input, training_images, training_labels);
+        vector<Number> all_num = Training::InitializeAllNum();
 
-        Number::TrainAllNum(all_num, training_images, training_labels);
+        Training::TrainAllNum(all_num, training_images, training_labels);
         REQUIRE(all_num.at(5).probability_matrix[5][17] == 0.5);
         REQUIRE(all_num.at(5).probability_matrix[13][12] == 1);
         REQUIRE(all_num.at(0).probability_matrix[4][15] == 1);
