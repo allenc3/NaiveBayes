@@ -30,11 +30,7 @@ class Number {
         void TrainOneNum(string data);
         void CalcProbability();
 
-        static vector<Number> InitializeAllNum();
-        static void ProcessInput(vector<string> input, vector<string> &training_images,
-                                 vector<string> &training_labels);
-        static void TrainAllNum(vector<Number> &all_num, vector<string> training_images,
-                                vector<string> training_labels);
+
 
 };
 
