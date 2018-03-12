@@ -18,6 +18,7 @@ using std::ofstream;
 bool Training::ReadTrainingFiles(vector<string> &all_input) {
 
     string file_name;
+    string base_path = "data/";
     while(true) {
         cout << "Please choose a \"training images\" file!\n";
 
@@ -26,7 +27,7 @@ bool Training::ReadTrainingFiles(vector<string> &all_input) {
             return true;
         }
 
-        ifstream training_images(file_name);
+        ifstream training_images(base_path + file_name);
         if (training_images.fail()) {
             cout << file_name + " does not exist!\n";
             continue;
@@ -46,7 +47,7 @@ bool Training::ReadTrainingFiles(vector<string> &all_input) {
             return true;
         }
 
-        ifstream training_labels(file_name);
+        ifstream training_labels(base_path + file_name);
         if (training_labels.fail()) {
             cout << file_name + " does not exist!\n";
             continue;
@@ -125,7 +126,7 @@ bool Training::SaveModel(vector<string> all_input) {
         if(input == "exit") {
             return false;
         }
-        myfile.open(input);
+        myfile.open("models/" + input + ".txt");
 
         if (myfile.good()) {
             vector<string> training_images;
