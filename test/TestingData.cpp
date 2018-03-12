@@ -100,6 +100,36 @@ const string TestingData::input =
         "                            \n"
         "                            \n5\n0\n5";
 
+const string TestingData::trainingtest =
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "                +++++##+\n"
+        "        +++++######+###+\n"
+        "       +##########+++++\n"
+        "        #######+##\n"
+        "        +++###  ++\n"
+        "           +#+\n"
+        "           +#+\n"
+        "            +#+\n"
+        "            +##++\n"
+        "             +###++\n"
+        "              ++##++\n"
+        "                +##+\n"
+        "                 ###+\n"
+        "              +++###\n"
+        "            ++#####+\n"
+        "          ++######+\n"
+        "        ++######+\n"
+        "       +######+\n"
+        "    ++######+\n"
+        "    +####++\n"
+        "\n"
+        "\n"
+        "\n5";
+
 const vector<string> TestingData::all_input = TestingData::input_split(TestingData::input);
 
 vector<string> TestingData::input_split(string input) {

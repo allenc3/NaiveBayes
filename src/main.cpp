@@ -18,6 +18,7 @@ using std::ofstream;
 using std::ifstream;
 
 
+void TrainModel();
 
 int main(){
 
@@ -28,55 +29,8 @@ int main(){
         cin >> input;
 
         if(input == "Training") {
-
-            vector<string> all_input;
-            string file_name;
-            while (true) {
-                cout << "Please choose a \"training images\" file!\n";
-                cin >> file_name;
-                if (file_name == "exit") {
-                    break;
-                }
-                bool success = Training::ReadTrainingImages(all_input, file_name);
-                if (!success) {
-                    cout << file_name + " does not exist!\n";
-                    continue;
-                }
-                break;
-            }
-
-            if(file_name == "exit") {
-                continue;
-            }
-
-            while(true) {
-                cout << "Please choose a \"training labels\" file!\n";
-                cin >> file_name;
-                if (file_name == "exit") {
-                    break;
-                }
-                bool success = Training::ReadTrainingLabels(all_input, file_name);
-                if (!success) {
-                    cout << file_name + " does not exist!\n";
-                    continue;
-                }
-                break;
-            }
-
-            while(true) {
-                cout << "What is the file name you want to save to?\n";
-                cin >> file_name;
-                if(file_name == "exit") {
-                    return false;
-                }
-                bool success = Training::SaveModel(all_input, file_name);
-                if(!success) {
-                    cout << "File path invalid!\n";
-                }
-                break;
-            }
+            TrainModel();
         }
-
 
         else if(input == "exit"){
             break;
@@ -86,11 +40,54 @@ int main(){
             continue;
         }
     }
-
-
     return 0;
 }
 
+void TrainModel(){
+    vector<string> all_input;
+    string file_name;
+    while (true) {
+        cout << "Please choose a \"training images\" file!\n";
+        cin >> file_name;
+        if (file_name == "exit") {
+            return;
+        }
+        bool success = Training::ReadTrainingImages(all_input, file_name);
+        if (!success) {
+            cout << file_name + " does not exist!\n";
+            continue;
+        }
+        break;
+    }
+
+    while(true) {
+        cout << "Please choose a \"training labels\" file!\n";
+        cin >> file_name;
+        if (file_name == "exit") {
+            return;
+        }
+        bool success = Training::ReadTrainingLabels(all_input, file_name);
+        if (!success) {
+            cout << file_name + " does not exist!\n";
+            continue;
+        }
+        break;
+    }
+
+    while(true) {
+        cout << "What is the file name you want to save to?\n";
+        cin >> file_name;
+        if(file_name == "exit") {
+            return;
+        }
+        bool success = Training::SaveModel(all_input, file_name);
+        if(!success) {
+            cout << "File path invalid!\n";
+            continue;
+        }
+        break;
+    }
+}
 
 
 

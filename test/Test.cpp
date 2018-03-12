@@ -8,6 +8,7 @@
 #include "TestingData.h"
 #include "../src/Training.h"
 #include <string>
+#include <math.h>
 #include <sstream>
 
 
@@ -23,25 +24,7 @@ TEST_CASE("Testing Number Class"){
         REQUIRE(one.times_appeared == 0);
     }
 
-    SECTION("InitializeAllNum"){
-        vector<Number> num = Training::InitializeAllNum();
-        REQUIRE(num.at(0).number == 0);
-        REQUIRE(num.at(9).number == 9);
-    }
-
-    SECTION("TestingData.class, ProcessInput"){
-        vector<string> training_images;
-        vector<string> training_labels;
-        vector<string> all_input = TestingData::all_input;
-        Training::ProcessInput(all_input, training_images, training_labels);
-
-        REQUIRE(training_images.at(0).size() == 784);
-        REQUIRE(stoi(training_labels.at(0)) == 5);
-        REQUIRE(training_images.at(1).size() == 784);
-        REQUIRE(stoi(training_labels.at(1)) == 0);
-    }
-
-    SECTION("TrainOneNum"){
+    SECTION("Number::TrainOneNum"){
         Number five = Number(5);
         vector<string> all_input = TestingData::all_input;
         string five_image;
@@ -53,8 +36,28 @@ TEST_CASE("Testing Number Class"){
         REQUIRE(five.probability_matrix[7][7] == 1);
         REQUIRE(five.probability_matrix[7][8] == 1);
     }
+}
 
-    SECTION("TrainAllNum, DivideByAppearance"){
+TEST_CASE("Training Class"){
+    SECTION("Training::InitializeAllNum"){
+        vector<Number> num = Training::InitializeAllNum();
+        REQUIRE(num.at(0).number == 0);
+        REQUIRE(num.at(9).number == 9);
+    }
+
+    SECTION("Training::ProcessInput, TestingData.class"){
+        vector<string> training_images;
+        vector<string> training_labels;
+        vector<string> all_input = TestingData::all_input;
+        Training::ProcessInput(all_input, training_images, training_labels);
+
+        REQUIRE(training_images.at(0).size() == 784);
+        REQUIRE(stoi(training_labels.at(0)) == 5);
+        REQUIRE(training_images.at(1).size() == 784);
+        REQUIRE(stoi(training_labels.at(1)) == 0);
+    }
+
+    SECTION("Training::TrainAllNum, Number::CalcProbability"){
         vector<string> training_images;
         vector<string> training_labels;
         vector<string> all_input = TestingData::all_input;
@@ -63,10 +66,19 @@ TEST_CASE("Testing Number Class"){
 
         Training::TrainAllNum(all_num, training_images, training_labels);
         REQUIRE(all_num.at(5).probability_matrix[5][17] == 0.5);
-        REQUIRE(all_num.at(5).probability_matrix[13][12] == 1);
-        REQUIRE(all_num.at(0).probability_matrix[4][15] == 1);
+        double prob = all_num.at(5).probability_matrix[13][12];
+        REQUIRE(fabs(prob - 0.9545454545) <= 0.00001);
+        prob = all_num.at(0).probability_matrix[4][15];
+        REQUIRE(fabs(prob - 0.9166666667) <= 0.00001);
     }
 
+    SECTION("Training::ReadTrainingImages, Training::ReadTrainingLabels, Training::SaveModel"){
+        vector<string> test = TestingData::input_split(TestingData::trainingtest);
+        vector<string> all_input;
+        REQUIRE(Training::ReadTrainingImages(all_input, "../data/mytestimages") == true);
+        REQUIRE(Training::ReadTrainingLabels(all_input, "../data/mytestlabels") == true);
+        REQUIRE(Training::SaveModel(all_input, "../models/test") == true);
+    }
 
 }
 

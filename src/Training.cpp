@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 
+
 using std::string;
 using std::vector;
 using std::cin;
@@ -17,8 +18,7 @@ using std::ofstream;
 
 bool Training::ReadTrainingImages(vector<string> &all_input, string file_name) {
 
-    string base_path = "data/";
-    ifstream training_images(base_path + file_name);
+    ifstream training_images(file_name);
 
     if (training_images.fail()) {
         return false;
@@ -33,8 +33,7 @@ bool Training::ReadTrainingImages(vector<string> &all_input, string file_name) {
 
 bool Training::ReadTrainingLabels(vector<string> &all_input, string file_name) {
 
-    string base_path = "data/";
-    ifstream training_labels(base_path + file_name);
+    ifstream training_labels(file_name);
 
 
     if (training_labels.fail()) {
@@ -106,7 +105,7 @@ bool Training::SaveModel(vector<string> all_input, string file_name) {
 
     ofstream myfile;
 
-    myfile.open("models/" + file_name + ".txt");
+    myfile.open(file_name);
 
     if (myfile.good()) {
         vector<string> training_images;
