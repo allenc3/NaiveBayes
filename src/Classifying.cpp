@@ -6,6 +6,7 @@
 #include <fstream>
 #include <math.h>
 #include <iostream>
+#include <iomanip>
 
 using std::ifstream;
 using std::cout;
@@ -93,18 +94,35 @@ void Classifying::ClassifyAllImages(Model model, vector<string> testing_image, v
         num_frequency[actual_num]++;
     }
 
-    for (int j = 0; j < confusion_matrix.size(); ++j) {
-        int num_appeared = num_frequency[j];
-        for (int i = 0; i < confusion_matrix.at(0).size(); ++i) {
-            if(confusion_matrix[j][i] == 0) {
-                cout << std::to_string(confusion_matrix[j][i]) << " ";
-                continue;
-            }
 
-            confusion_matrix[j][i] /= (double) num_appeared;
-            cout << std::to_string(confusion_matrix[j][i]) << " ";
+    for (int j = 0; j < confusion_matrix.size() + 1; ++j) {
+        if(j == 0) {
+            for (int i = 0; i < confusion_matrix.size() + 1; ++i) {
+                if(i == 0) {
+                    cout << "  ";
+                }
+                if(i > 0) {
+                    cout << "    "<< i - 1 << "    ";
+                }
+            }
+            cout << "\n";
+        } else {
+            int num_appeared = num_frequency[j - 1];
+            for (int i = 0; i < confusion_matrix.at(0).size() + 1; ++i) {
+                if(i == 0) {
+                    cout << j - 1 << " ";
+                } else {
+                    if (confusion_matrix[j - 1][i - 1] == 0) {
+                        cout << std::to_string(confusion_matrix[j - 1][i - 1]) << " ";
+                        continue;
+                    }
+
+                    confusion_matrix[j - 1][i - 1] /= (double) num_appeared;
+                    cout << std::to_string(confusion_matrix[j - 1][i - 1]) << " ";
+                }
+            }
+            cout << "\n";
         }
-        cout << "\n";
     }
 }
 
