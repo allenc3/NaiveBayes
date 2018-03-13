@@ -16,10 +16,13 @@ using std::cout;
 using std::ifstream;
 using std::ofstream;
 
+/**
+ * Reads image file
+ */
 bool Training::ReadTrainingImages(vector<string> &all_input, string file_name) {
 
     ifstream training_images(file_name);
-
+    //Returns false if file cannot be read
     if (training_images.fail()) {
         return false;
     } else {
@@ -31,11 +34,13 @@ bool Training::ReadTrainingImages(vector<string> &all_input, string file_name) {
     }
 }
 
+/**
+ * Reads labels file
+ */
 bool Training::ReadTrainingLabels(vector<string> &all_input, string file_name) {
 
     ifstream training_labels(file_name);
-
-
+    //Returns false if file cannot be read
     if (training_labels.fail()) {
         return false;
     } else{
@@ -43,16 +48,13 @@ bool Training::ReadTrainingLabels(vector<string> &all_input, string file_name) {
         while (std::getline(training_labels, line)) {
             all_input.push_back(line);
         }
-
-//        for (int i = 0; i < all_input.size(); ++i) {
-//            cout << all_input.at(i) + "\n";
-//        }
         return true;
     }
 }
 
-
-
+/**
+ * Initializes all Number objects
+ */
 vector<Number> Training::InitializeAllNum(){
     vector<Number> all_num;
     const int kDigitLimit = 10;
@@ -62,18 +64,21 @@ vector<Number> Training::InitializeAllNum(){
     return all_num;
 }
 
+/**
+ * Process's input by combining image and label data
+ */
 void Training::ProcessInput(vector<string> input, vector<string> &training_images, vector<string> &training_labels){
 
     string image;
     int count = 1;
     for (int i = 0; i < input.size(); ++i) {
         string line = input.at(i);
+        // Once images is done, start reading labels
         if(line.find_first_of("0123456789") != string::npos) {
             training_labels.push_back(line);
             continue;
         }
         image += line;
-//        image += "\n";
         if(count == 28) {
             training_images.push_back(image);
             image.clear();
@@ -84,30 +89,38 @@ void Training::ProcessInput(vector<string> input, vector<string> &training_image
     }
 }
 
+/**
+ * Trains all the Numbers by using all the images
+ */
 void Training::TrainAllNum(vector<Number> &all_num, vector<string> training_images, vector<string> training_labels) {
 
     for (int i = 0; i < training_labels.size(); ++i) {
+        // Find the label, and use this to determine what the image is at a particular index
         int num = stoi(training_labels.at(i));
         for (int j = 0; j < all_num.size(); ++j) {
+            // Use label to train the number with the image.
             if(num == all_num.at(j).number) {
                 all_num.at(j).TrainOneNum(training_images.at(i));
-                continue;
             }
         }
     }
 
+    // Calculates probability for each element of the probability matrix for each Number.
     for (int k = 0; k < all_num.size(); ++k) {
         all_num.at(k).CalcProbability();
     }
 }
 
+/**
+ * Saves Model
+ */
 bool Training::SaveModel(vector<string> all_input, string file_name) {
 
-    ofstream myfile;
+    ofstream model;
+    model.open(file_name);
 
-    myfile.open(file_name);
-
-    if (myfile.good()) {
+    // Returns true if file can be saved, false otherwise.
+    if (model.good()) {
         vector<string> training_images;
         vector<string> training_labels;
 
@@ -116,27 +129,26 @@ bool Training::SaveModel(vector<string> all_input, string file_name) {
         Training::ProcessInput(all_input, training_images, training_labels);
         Training::TrainAllNum(all_num, training_images, training_labels);
 
+        // The class's probability, P(class)
         vector<double> priors;
         for (int i = 0; i < 10; ++i) {
             priors.push_back(all_num.at(i).times_appeared / (double) training_labels.size());
         }
 
+        // Formatting saved file
         for (int i = 0; i < 10; ++i) {
-            myfile << priors.at(i) << " \n";
+            model << priors.at(i) << " \n";
             for (int j = 0; j < 28; ++j) {
                 for (int k = 0; k < 28; ++k) {
-                    myfile << std::to_string(all_num[i].probability_matrix[j][k]) << " ";
+                    model << std::to_string(all_num[i].probability_matrix[j][k]) << " ";
                 }
-                myfile << "\n";
+                model << "\n";
             }
         }
-        myfile.close();
+        model.close();
         return true;
     } else {
         return false;
     }
-
-
-
 }
 

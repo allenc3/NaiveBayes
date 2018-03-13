@@ -12,8 +12,15 @@ using std::ifstream;
 using std::ofstream;
 using std::cout;
 
+/**
+ * Reads in testing images from a file and places content in a vector of strings.
+ * @param all_images the vector of string
+ * @param file_name the file name
+ * @return true if data successfully extracted
+ */
 bool Classifying::ReadTestingImages(vector<string> &all_images, string file_name) {
 
+    // Reads file stream.
     ifstream testing_images(file_name);
 
     if (testing_images.fail()) {
@@ -22,6 +29,7 @@ bool Classifying::ReadTestingImages(vector<string> &all_images, string file_name
         string line;
         string image;
         int count = 0;
+        // Adds an image(28) to vector
         while (std::getline(testing_images, line)) {
             if(count < 28) {
                 image += line;
@@ -34,11 +42,20 @@ bool Classifying::ReadTestingImages(vector<string> &all_images, string file_name
             }
 
         }
+        testing_images.close();
         return true;
     }
+
 }
 
+/**
+ * Reads in testing labels from a file and places content in a vector of strings.
+ * @param all_images the vector of string
+ * @param file_name the file name
+ * @return true if data successfully extracted
+ */
 bool Classifying::ReadTestingLabels(vector<string> &all_labels, string file_name) {
+
     ifstream testing_labels(file_name);
 
     if (testing_labels.fail()) {
@@ -48,18 +65,32 @@ bool Classifying::ReadTestingLabels(vector<string> &all_labels, string file_name
         while (std::getline(testing_labels, line)) {
             all_labels.push_back(line);
         }
+        testing_labels.close();
         return true;
     }
+
 }
 
+/**
+ * Classifies an image as a number.
+ * @param model The model to use
+ * @param image Image to classify
+ * @param prototypes keeps track of most/least prototypical
+ * @param probability keeps track of highest/lowest probability
+ * @param label the label according to testlabels
+ * @return the digit the model classified the image as
+ */
 int Classifying::ClassifyingImage(Model model, string image, vector<vector<string>> &prototypes,
                                   vector<vector<double>> &probability, int label) {
+
     vector<double> posteriori_classification(kDigits, 0);
 
+    // Adds in the class's individual probabilities first.
     for (int j = 0; j < model.probability_matrix.size(); ++j) {
         posteriori_classification[j] += log2(model.probability_matrix[j][0]);
     }
 
+    // Adds in the class's probability based on the image
     for (int pixel = 0; pixel < image.length(); ++pixel) {
         for (int digit = 0; digit < kDigits; ++digit) {
             // pixel + 1 since 0 is used for the
@@ -71,13 +102,11 @@ int Classifying::ClassifyingImage(Model model, string image, vector<vector<strin
         }
     }
 
-
+    // Classifies image as a number
     int max = 0;
     double max_probability;
-    int lowest = 0;
-    int highest = 1;
     for (int i = 0; i < posteriori_classification.size(); ++i) {
-
+        // Keeps track of most/least prototypical.
         if(i == label) {
             PrototypeProbabilities(prototypes, probability, label, posteriori_classification, image);
         }
@@ -94,6 +123,14 @@ int Classifying::ClassifyingImage(Model model, string image, vector<vector<strin
     return max;
 }
 
+/**
+ * Keeps track of most/least prototypical.
+ * @param prototypes vector of images
+ * @param probability vector of probabilities
+ * @param label from testing label
+ * @param posteriori_classification the probability
+ * @param image
+ */
 void Classifying::PrototypeProbabilities(vector<vector<string>> &prototypes, vector<vector<double>> &probability,
                                          int label, vector<double> posteriori_classification, string image) {
     int lowest = 0;
@@ -139,6 +176,14 @@ void Classifying::PrototypeProbabilities(vector<vector<string>> &prototypes, vec
     }
 }
 
+/**
+ * Classifies all the images
+ * @param model
+ * @param testing_image
+ * @param testing_labels
+ * @param file_name
+ * @return
+ */
 bool Classifying::ClassifyAllImages(Model model, vector<string> testing_image,
                                        vector<string> testing_labels, string file_name) {
 

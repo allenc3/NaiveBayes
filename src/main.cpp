@@ -24,14 +24,11 @@ void LoadModel(Model &model);
 void TrainModel();
 void ClassifyImage(Model model);
 
-int main(){
+int main() {
 
     Model model;
-    while(true){
-
+    while(true) {
         cout << "Select an action: Training, Load, Classify, or Exit\n";
-
-
         string input;
         cin >> input;
 
@@ -41,23 +38,27 @@ int main(){
             LoadModel(model);
         } else if(input == "Classify") {
             ClassifyImage(model);
-        }
-        else if(input == "Exit") {
+        } else if(input == "Exit") {
             break;
-        }
-        else {
-            cout << "Unknown Command.";
+        } else {
+            cout << "Unknown Command.\n";
             continue;
         }
     }
     return 0;
-
 }
 
+/**
+ * Classfies a file's images.
+ * @param model
+ */
 void ClassifyImage(Model model) {
+
     string file_name;
     vector<string> all_images;
     vector<string> all_labels;
+
+    // Reads a testing image file
     while (true) {
         cout << "Please choose a \"testing images\" file!\n";
         cin >> file_name;
@@ -65,13 +66,14 @@ void ClassifyImage(Model model) {
             return;
         }
         bool success = Classifying::ReadTestingImages(all_images, file_name);
-        if (!success) {
-            cout << file_name + " does not exist!\n";
-            continue;
+        if(success) {
+            cout << "Read images file successfully!\n";
+            break;
         }
-        break;
+        cout << file_name + " does not exist!\n";
     }
 
+    // Reads a testing label file
     while(true) {
         cout << "Please choose a \"testing labels\" file!\n";
         cin >> file_name;
@@ -79,30 +81,34 @@ void ClassifyImage(Model model) {
             return;
         }
         bool success = Classifying::ReadTestingLabels(all_labels, file_name);
-        if (!success) {
-            cout << file_name + " does not exist!\n";
-            continue;
+        if(success) {
+            cout << "Read labels file successfully!\n";
+            break;
         }
-        break;
+        cout << file_name + " does not exist!\n";
     }
 
-
+    // Starts classification and saves result
     while(true) {
         string file_name;
         cout << "Please choose a location to save to!\n";
         cin >> file_name;
-
+        if (file_name == "exit") {
+            return;
+        }
         bool success = Classifying::ClassifyAllImages(model, all_images, all_labels, file_name);
-        if(!success){
-            cout << "Failed to generate test results! Invalid file name.\n";
+        if(success) {
+            cout << "Test results saved to " + file_name + "!\n";
             break;
         }
-        break;
+        cout << "Failed to generate test results! Invalid file name.\n";
     }
-
-
 }
-//
+
+/**
+ * Loads a model
+ * @param model to be loaded
+ */
 void LoadModel(Model &model){
     string file_name;
     while(true) {
@@ -115,14 +121,14 @@ void LoadModel(Model &model){
         if(success) {
             cout << file_name + " successfully loaded!\n";
             return;
-        } else {
-            cout << file_name + " does not exist!\n";
-            continue;
         }
+        cout << file_name + " does not exist!\n";
     }
 }
 
-
+/**
+ * Trains a model based on training data
+ */
 void TrainModel(){
     vector<string> all_input;
     string file_name;
@@ -133,11 +139,11 @@ void TrainModel(){
             return;
         }
         bool success = Training::ReadTrainingImages(all_input, file_name);
-        if (!success) {
-            cout << file_name + " does not exist!\n";
-            continue;
+        if(success) {
+            cout << "Read images file successfully!\n";
+            break;
         }
-        break;
+        cout << file_name + " does not exist!\n";
     }
 
     while(true) {
@@ -147,11 +153,11 @@ void TrainModel(){
             return;
         }
         bool success = Training::ReadTrainingLabels(all_input, file_name);
-        if (!success) {
-            cout << file_name + " does not exist!\n";
-            continue;
+        if(success) {
+            cout << "Read labels file successfully!\n";
+            break;
         }
-        break;
+        cout << file_name + " does not exist!\n";
     }
 
     while(true) {
@@ -161,11 +167,11 @@ void TrainModel(){
             return;
         }
         bool success = Training::SaveModel(all_input, file_name);
-        if(!success) {
-            cout << "File path invalid!\n";
-            continue;
+        if(success) {
+            cout << "Model saved in " + file_name + "!\n";
+            break;
         }
-        break;
+        cout << "File path invalid!\n";
     }
 }
 
