@@ -14,9 +14,6 @@ using std::cout;
 
 /**
  * Reads in testing images from a file and places content in a vector of strings.
- * @param all_images the vector of string
- * @param file_name the file name
- * @return true if data successfully extracted
  */
 bool Classifying::ReadTestingImages(vector<string> &all_images, string file_name) {
 
@@ -50,14 +47,11 @@ bool Classifying::ReadTestingImages(vector<string> &all_images, string file_name
 
 /**
  * Reads in testing labels from a file and places content in a vector of strings.
- * @param all_images the vector of string
- * @param file_name the file name
- * @return true if data successfully extracted
  */
 bool Classifying::ReadTestingLabels(vector<string> &all_labels, string file_name) {
 
     ifstream testing_labels(file_name);
-
+    // Returns false if can't read
     if (testing_labels.fail()) {
         return false;
     } else {
@@ -193,11 +187,13 @@ bool Classifying::ClassifyAllImages(Model model, vector<string> testing_image,
 
         vector<vector<double>> confusion_matrix(kDigits, vector<double>(kDigits));
 
+        // Keep track of each num's frequency for confusion matrix
         vector<int> num_frequency(kDigits);
 
         vector<vector<string>> prototypes(kDigits, vector<string>(kHighLow));
         vector<vector<double>> probabilities(kDigits, vector<double>(kHighLow));
 
+        // Classifies all images and fill in corresponding spot for confusion matrix
         for (int i = 0; i < testing_labels.size(); ++i) {
             int actual_num = std::stoi(testing_labels.at(i));
             int classification = Classifying::ClassifyingImage(model, testing_image.at(i),
@@ -207,6 +203,7 @@ bool Classifying::ClassifyAllImages(Model model, vector<string> testing_image,
             num_frequency[actual_num]++;
         }
 
+        // Formatting confusion matrix
         for (int j = 0; j < confusion_matrix.size() + 1; ++j) {
             if (j == 0) {
                 for (int i = 0; i < confusion_matrix.size() + 1; ++i) {
@@ -237,6 +234,7 @@ bool Classifying::ClassifyAllImages(Model model, vector<string> testing_image,
             }
         }
 
+        // Formatting display for least/most prototypical
         for (int k = 0; k < probabilities.size(); ++k) {
             myfile << "For " + std::to_string(k) + ": \n";
             for (int i = 0; i < probabilities[0].size(); ++i) {
@@ -256,6 +254,9 @@ bool Classifying::ClassifyAllImages(Model model, vector<string> testing_image,
 
 }
 
+/**
+ * Recreates image for display
+ */
 void Classifying::RecreateImage(string image, ofstream &my_file) {
 
     int count = 0;
