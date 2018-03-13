@@ -10,6 +10,9 @@
 #include <string>
 #include <math.h>
 #include <sstream>
+#include "../src/Model.h"
+#include "../src/Classifying.h"
+#include <iostream>
 
 
 using std::string;
@@ -73,12 +76,58 @@ TEST_CASE("Training Class"){
     }
 
     SECTION("Training::ReadTrainingImages, Training::ReadTrainingLabels, Training::SaveModel"){
-        vector<string> test = TestingData::input_split(TestingData::trainingtest);
+        vector<string> test = TestingData::input_split(TestingData::training_test);
         vector<string> all_input;
         REQUIRE(Training::ReadTrainingImages(all_input, "../data/mytestimages") == true);
         REQUIRE(Training::ReadTrainingLabels(all_input, "../data/mytestlabels") == true);
         REQUIRE(Training::SaveModel(all_input, "../models/test") == true);
     }
+}
+
+TEST_CASE("Model") {
+    SECTION("Model"){
+        Model model = Model();
+        REQUIRE(model.probability_matrix.size() == 10);
+        REQUIRE(model.probability_matrix.at(0).size() == 785);
+    }
+
+    SECTION("Load Model") {
+        Model model = Model();
+        REQUIRE(model.LoadModel("../models/TrainingModel.txt") == true);
+        REQUIRE(model.probability_matrix.at(0).at(0) == 0.0958);
+        REQUIRE(fabs(model.probability_matrix.at(0).at(1) - 0.000209) <= 0.0001);
+        REQUIRE(fabs(model.probability_matrix.at(0).at(784) - 0.002295) <= 0.0001);
+        REQUIRE(model.probability_matrix.at(2).at(0) == 0.0976);
+        REQUIRE(fabs(model.probability_matrix.at(9).at(784) - 0.000202) <= 0.0001);
+    }
+}
+
+TEST_CASE("Classifying") {
+
+    SECTION("ReadTestingImage and ReadTestingLabel") {
+        // Images
+        vector<string> testing_image;
+        vector<string> testing_label;
+        REQUIRE(Classifying::ReadTestingImages(testing_image, "../data/testimages") == true);
+        REQUIRE(Classifying::ReadTestingLabels(testing_label, "../data/testlabels") == true);
+        vector<string> load_test = TestingData::input_split(TestingData::load_test_one);
+        string image;
+        for (int i = 0; i < load_test.size(); ++i) {
+            image += load_test.at(i);
+        }
+        REQUIRE(testing_image.at(0) == image);
+        vector<string> load_test_two= TestingData::input_split(TestingData::load_test_two);
+        image.clear();
+        for (int i = 0; i < load_test_two.size(); ++i) {
+            image += load_test_two.at(i);
+        }
+        REQUIRE(testing_image.at(testing_image.size() - 1) == image);
+
+        // Labels
+        REQUIRE(stoi(testing_label.at(0)) == 9);
+        REQUIRE(stoi(testing_label.at(testing_label.size() - 1)) == 5);
+    }
+
 
 }
 

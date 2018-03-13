@@ -17,7 +17,9 @@ class TestingData{
         static const string input;
         static vector<string> input_split(string input);
         static const vector<string> all_input;
-        static const string trainingtest;
+        static const string training_test;
+        static const string load_test_one;
+        static const string load_test_two;
 
 };
 

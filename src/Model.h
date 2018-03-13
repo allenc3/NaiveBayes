@@ -16,6 +16,12 @@ using std::vector;
 class Model {
 
     public:
+        const static int all_probability = 785;
+        const static int all_num = 10;
+        vector<vector<double>> probability_matrix;
+
+        Model();
+        bool LoadModel(string file_name);
 
 };
 

@@ -122,10 +122,10 @@ bool Training::SaveModel(vector<string> all_input, string file_name) {
         }
 
         for (int i = 0; i < 10; ++i) {
-            myfile << priors.at(i) << "\n";
+            myfile << priors.at(i) << " \n";
             for (int j = 0; j < 28; ++j) {
                 for (int k = 0; k < 28; ++k) {
-                    myfile << std::to_string(all_num[i].probability_matrix[j][k]);
+                    myfile << std::to_string(all_num[i].probability_matrix[j][k]) << " ";
                 }
                 myfile << "\n";
             }

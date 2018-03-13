@@ -12,6 +12,65 @@ using std::regex;
 using std::sregex_token_iterator;
 using std::cout;
 
+const string TestingData::load_test_two =
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "        ++++++###++         \n"
+        "       +###########+        \n"
+        "        #######+#+++        \n"
+        "         +###+              \n"
+        "         ###                \n"
+        "         ##+                \n"
+        "         ##+                \n"
+        "         +###++++           \n"
+        "          ++##+###+         \n"
+        "             +  +##+        \n"
+        "                 +#+        \n"
+        "                 +##        \n"
+        "                 ###        \n"
+        "                +##+        \n"
+        "               +###+        \n"
+        "             +####+         \n"
+        "            +####+          \n"
+        "           +####            \n"
+        "           ###++            \n"
+        "           +#+              \n"
+        "                            \n"
+        "                            ";
+
+const string TestingData::load_test_one =
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "                            \n"
+        "             ++###+         \n"
+        "             ######+        \n"
+        "            +######+        \n"
+        "            ##+++##+        \n"
+        "           +#+  +##+        \n"
+        "           +##++###+        \n"
+        "           +#######+        \n"
+        "           +#######+        \n"
+        "            +##+###         \n"
+        "              ++##+         \n"
+        "              +##+          \n"
+        "              ###+          \n"
+        "            +###+           \n"
+        "            +##+            \n"
+        "           +##+             \n"
+        "          +##+              \n"
+        "         +##+               \n"
+        "         ##+                \n"
+        "        +#+                 \n"
+        "        +#+                 \n"
+        "                            ";
 
 const string TestingData::input =
         "                            \n"
@@ -100,7 +159,7 @@ const string TestingData::input =
         "                            \n"
         "                            \n5\n0\n5";
 
-const string TestingData::trainingtest =
+const string TestingData::training_test =
         "\n"
         "\n"
         "\n"

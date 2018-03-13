@@ -8,8 +8,10 @@
 #include <limits>
 #include <iomanip>
 #include "Number.h"
+#include "Model.h"
 #include "../test/TestingData.h"
 #include "Training.h"
+#include "Classifying.h"
 
 using std::string;
 using std::cin;
@@ -18,30 +20,96 @@ using std::ofstream;
 using std::ifstream;
 
 
+void LoadModel(Model &model);
 void TrainModel();
+void ClassifyImage(Model model);
 
 int main(){
 
+    Model model;
     while(true){
 
-        cout << "Select an action: Training, load model, classify image, or exit\n";
+        cout << "Select an action: Training, Load, Classify, or Exit\n";
+
+
         string input;
         cin >> input;
 
         if(input == "Training") {
             TrainModel();
+        } else if(input == "Load") {
+            LoadModel(model);
+        } else if(input == "Classify") {
+            ClassifyImage(model);
         }
-
-        else if(input == "exit"){
+        else if(input == "Exit") {
             break;
         }
-        else{
+        else {
             cout << "Unknown Command.";
             continue;
         }
     }
     return 0;
+
 }
+
+void ClassifyImage(Model model) {
+    string file_name;
+    vector<string> all_images;
+    vector<string> all_labels;
+    while (true) {
+        cout << "Please choose a \"testing images\" file!\n";
+        cin >> file_name;
+        if (file_name == "exit") {
+            return;
+        }
+        bool success = Classifying::ReadTestingImages(all_images, file_name);
+        if (!success) {
+            cout << file_name + " does not exist!\n";
+            continue;
+        }
+        break;
+    }
+
+    while(true) {
+        cout << "Please choose a \"testing labels\" file!\n";
+        cin >> file_name;
+        if (file_name == "exit") {
+            return;
+        }
+        bool success = Classifying::ReadTestingLabels(all_labels, file_name);
+        if (!success) {
+            cout << file_name + " does not exist!\n";
+            continue;
+        }
+        break;
+    }
+
+    Classifying::ClassifyAllImages(model, all_images, all_labels);
+
+
+}
+//
+void LoadModel(Model &model){
+    string file_name;
+    while(true) {
+        cout << "Please choose a Model to load!\n";
+        cin >> file_name;
+        if(file_name == "exit") {
+            return;
+        }
+        bool success = model.LoadModel(file_name);
+        if(success) {
+            cout << file_name + " successfully loaded!\n";
+            return;
+        } else {
+            cout << file_name + " does not exist!\n";
+            continue;
+        }
+    }
+}
+
 
 void TrainModel(){
     vector<string> all_input;
@@ -143,3 +211,20 @@ void TrainModel(){
 //myfile << "\n";
 //}
 //myfile.close();
+
+//Model model = Model();
+//    model.LoadModel("../models/TrainingModel.txt");
+//
+//    vector<string> load_test = TestingData::input_split(TestingData::load_test_one);
+//    string image;
+//    for (int i = 0; i < load_test.size(); ++i) {
+//        image += load_test.at(i);
+//    }
+//
+//    vector<string> hi;
+//    hi.push_back(image);
+//
+//    vector<string> num;
+//    num.push_back(std::to_string(9));
+//
+//    Classifying::ClassifyAllImages(model, hi, num);
