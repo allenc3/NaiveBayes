@@ -86,7 +86,19 @@ void ClassifyImage(Model model) {
         break;
     }
 
-    Classifying::ClassifyAllImages(model, all_images, all_labels);
+
+    while(true) {
+        string file_name;
+        cout << "Please choose a location to save to!\n";
+        cin >> file_name;
+
+        bool success = Classifying::ClassifyAllImages(model, all_images, all_labels, file_name);
+        if(!success){
+            cout << "Failed to generate test results! Invalid file name.\n";
+            break;
+        }
+        break;
+    }
 
 
 }

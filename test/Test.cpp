@@ -127,6 +127,17 @@ TEST_CASE("Classifying") {
         REQUIRE(stoi(testing_label.at(0)) == 9);
         REQUIRE(stoi(testing_label.at(testing_label.size() - 1)) == 5);
     }
+    
+    SECTION("ClassifyingImage, ClassifyingAllImage, PrototypeProbability, RecreateImage") {
+        vector<string> all_images;
+        Classifying::ReadTestingImages(all_images, "../data/testimages");
+        vector<string> all_labels;
+        Classifying::ReadTestingImages(all_images, "../data/testlabels");
+        Model model = Model();
+        model.LoadModel("../models/TrainingModel.txt");
+        
+        REQUIRE(Classifying::ClassifyAllImages(model, all_images, all_labels, "../TestResults/results.txt"));
+    }
 
 
 }
